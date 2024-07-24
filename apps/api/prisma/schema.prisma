@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,12 +7,135 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sample {
-  id        Int      @id @default(autoincrement())
-  name      String
-  code      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model events {
+  id             Int                 @id
+  organizerId    Int?
+  name           String              @db.VarChar(255)
+  description    String?             @db.VarChar(255)
+  location       String              @db.VarChar(255)
+  date           DateTime            @db.Date
+  time           DateTime            @db.Time(0)
+  price          Int                 @default(0)
+  availableSeats Int
+  promotion      Int?
+  ticket_type    events_ticket_type?
+  created_at     DateTime?           @db.DateTime(0)
+  updated_at     DateTime?           @db.DateTime(0)
+  users          users?              @relation(fields: [organizerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "events_ibfk_1")
+  promotions     promotions[]
+  reviews        reviews[]
 
-  @@map("samples") // if you want to use snake_case format
+  @@index([organizerId], map: "organizerId")
+}
+
+model promotions {
+  id             Int            @id
+  eventId        Int?
+  code           String?        @unique(map: "code") @db.VarChar(255)
+  discountAmount Int?
+  usageLimit     Int?
+  validFrom      DateTime?      @db.Date
+  validTo        DateTime?      @db.Date
+  createdAt      DateTime?      @db.Timestamp(0)
+  events         events?        @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "promotions_ibfk_1")
+  transactions   transactions[]
+
+  @@index([eventId], map: "eventId")
+}
+
+model referrals {
+  id              Int       @id
+  referralUserId  Int?
+  referralOwnerId Int?
+  pointsEarned    Int?
+  pointsExpiry    DateTime? @db.DateTime(0)
+  createdAt       DateTime? @db.Timestamp(0)
+  users           users?    @relation(fields: [referralUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "referrals_ibfk_1")
+
+  @@index([referralUserId], map: "referralUserId")
+}
+
+model reviews {
+  id         Int       @id
+  customerId Int?
+  eventId    Int?
+  rating     Int?
+  reviewText String    @db.VarChar(255)
+  createdAt  DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.DateTime(0)
+  users      users?    @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reviews_ibfk_1")
+  events     events?   @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reviews_ibfk_2")
+
+  @@index([customerId], map: "customerId")
+  @@index([eventId], map: "eventId")
+}
+
+model roles {
+  id   Int    @id
+  name String @db.VarChar(255)
+}
+
+model tickets {
+  id            Int             @id
+  eventId       Int?
+  customerId    Int?
+  transactionId Int?
+  price         Int?
+  status        tickets_status?
+  createdAt     DateTime?       @db.Timestamp(0)
+  transactions  transactions?   @relation(fields: [transactionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_1")
+  users         users?          @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_2")
+
+  @@index([customerId], map: "customerId")
+  @@index([transactionId], map: "transactionId")
+}
+
+model transactions {
+  id            Int                         @id
+  customerId    Int?
+  eventId       Int?
+  totalAmount   Int?
+  promotionsId  Int?
+  paymentStatus transactions_paymentStatus?
+  createdAt     DateTime?                   @db.Timestamp(0)
+  tickets       tickets[]
+  users         users?                      @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "transactions_ibfk_1")
+  promotions    promotions?                 @relation(fields: [promotionsId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "transactions_ibfk_2")
+
+  @@index([customerId], map: "customerId")
+  @@index([promotionsId], map: "promotionsId")
+}
+
+model users {
+  id            Int            @id
+  referralCode  String?        @unique(map: "referralCode") @db.VarChar(255)
+  pointsBalance Int?           @default(0)
+  roleId        Int?
+  name          String?        @db.VarChar(100)
+  email         String?        @unique(map: "email") @db.VarChar(100)
+  password      String?        @db.VarChar(100)
+  created_at    DateTime?      @db.DateTime(0)
+  updated_at    DateTime?      @db.DateTime(0)
+  events        events[]
+  referrals     referrals[]
+  reviews       reviews[]
+  tickets       tickets[]
+  transactions  transactions[]
+}
+
+enum transactions_paymentStatus {
+  paid
+  pending
+  failed
+}
+
+enum tickets_status {
+  purchased
+  checked_in
+  canceled
+}
+
+enum events_ticket_type {
+  free
+  paid
 }
