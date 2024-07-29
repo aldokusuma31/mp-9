@@ -8,7 +8,7 @@ datasource db {
 }
 
 model events {
-  id             Int                 @id
+  id             Int                 @id @default(autoincrement())
   organizerId    Int?
   name           String              @db.VarChar(255)
   description    String?             @db.VarChar(255)
@@ -29,7 +29,7 @@ model events {
 }
 
 model promotions {
-  id             Int            @id
+  id             Int            @id @default(autoincrement())
   eventId        Int?
   code           String?        @unique(map: "code") @db.VarChar(255)
   discountAmount Int?
@@ -44,7 +44,7 @@ model promotions {
 }
 
 model referrals {
-  id              Int       @id
+  id              Int       @id @default(autoincrement())
   referralUserId  Int?
   referralOwnerId Int?
   pointsEarned    Int?
@@ -56,7 +56,7 @@ model referrals {
 }
 
 model reviews {
-  id         Int       @id
+  id         Int       @id @default(autoincrement())
   customerId Int?
   eventId    Int?
   rating     Int?
@@ -71,12 +71,12 @@ model reviews {
 }
 
 model roles {
-  id   Int    @id
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
 }
 
 model tickets {
-  id            Int             @id
+  id            Int             @id @default(autoincrement())
   eventId       Int?
   customerId    Int?
   transactionId Int?
@@ -91,7 +91,7 @@ model tickets {
 }
 
 model transactions {
-  id            Int                         @id
+  id            Int                         @id @default(autoincrement())
   customerId    Int?
   eventId       Int?
   totalAmount   Int?
@@ -107,7 +107,7 @@ model transactions {
 }
 
 model users {
-  id            Int            @id
+  id            Int            @id @default(autoincrement())
   referralCode  String?        @unique(map: "referralCode") @db.VarChar(255)
   pointsBalance Int?           @default(0)
   roleId        Int?

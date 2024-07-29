@@ -1,10 +1,10 @@
 'use client'
 
 import React from "react";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import EventList from "@/components/events/EventList";
-import EventForm from "@/components/events/EventForm";
-import EventDetail from "@/components/events/EventDetail";
+// import { BrowserRouter, Route, Routes } from 'react-router-dom';
+// import EventList from "@/components/events/EventList";
+// import EventForm from "@/components/events/EventForm";
+// import EventDetail from "@/components/events/EventDetail";
 import Hero from "@/components/Hero";
 import AboutMe from "@/components/AboutMe";
 import Services from "@/components/Services";

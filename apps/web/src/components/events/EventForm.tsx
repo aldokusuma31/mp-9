@@ -1,130 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import api from '../services/apiService';
 
-interface Event {
-  id?: number;
-  name: string;
-  description: string;
-  location: string;
-  date: string;
-  time: string;
-  price: number;
-  availableSeats: number;
-  ticket_type: 'free' | 'paid';
-}
+const EventForm: React.FC<{ eventId?: number }> = ({ eventId }) => {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [price, setPrice] = useState(0);
+  const [availableSeats, setAvailableSeats] = useState(0);
+  const [ticketType, setTicketType] = useState('free');
 
-interface EventFormProps {
-  eventId?: number;
-}
-
-const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
-  const [event, setEvent] = useState<Event>({
-    name: '',
-    description: '',
-    location: '',
-    date: '',
-    time: '',
-    price: 0,
-    availableSeats: 0,
-    ticket_type: 'free',
-  });
-
-  useEffect(() => {
-    if (eventId) {
-      api.get(`/events/${eventId}`)
-        .then(response => {
-          setEvent(response.data);
-        })
-        .catch(error => {
-          console.error('There was an error fetching the event!', error);
-        });
-    }
-  }, [eventId]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setEvent({ ...event, [name]: value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (eventId) {
-      api.patch(`/events/${eventId}`, event)
-        .then(response => {
-          console.log('Event updated successfully');
-        })
-        .catch(error => {
-          console.error('There was an error updating the event!', error);
-        });
-    } else {
-      api.post('/events', event)
-        .then(response => {
-          console.log('Event created successfully');
-        })
-        .catch(error => {
-          console.error('There was an error creating the event!', error);
-        });
+    const event = { name, description, location, date, time, price, availableSeats, ticket_type: ticketType };
+
+    try {
+      if (eventId) {
+        await api.put(`/events/${eventId}`, event);
+      } else {
+        await api.post('/events', event);
+      }
+      alert('Event saved successfully');
+    } catch (error) {
+      console.error('Error saving event', error);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="name"
-        value={event.name}
-        onChange={handleChange}
-        placeholder="Event Name"
-      />
-      <input
-        type="text"
-        name="description"
-        value={event.description}
-        onChange={handleChange}
-        placeholder="Description"
-      />
-      <input
-        type="text"
-        name="location"
-        value={event.location}
-        onChange={handleChange}
-        placeholder="Location"
-      />
-      <input
-        type="date"
-        name="date"
-        value={event.date}
-        onChange={handleChange}
-      />
-      <input
-        type="time"
-        name="time"
-        value={event.time}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="price"
-        value={event.price}
-        onChange={handleChange}
-        placeholder="Price"
-      />
-      <input
-        type="number"
-        name="availableSeats"
-        value={event.availableSeats}
-        onChange={handleChange}
-        placeholder="Available Seats"
-      />
-      <select
-        name="ticket_type"
-        value={event.ticket_type}
-        onChange={handleChange}
-      >
+      <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <input type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
+      <input type="date" placeholder="Date" value={date} onChange={(e) => setDate(e.target.value)} />
+      <input type="time" placeholder="Time" value={time} onChange={(e) => setTime(e.target.value)} />
+      <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+      <input type="number" placeholder="Available Seats" value={availableSeats} onChange={(e) => setAvailableSeats(Number(e.target.value))} />
+      <select value={ticketType} onChange={(e) => setTicketType(e.target.value)}>
         <option value="free">Free</option>
         <option value="paid">Paid</option>
       </select>
-      <button type="submit">Submit</button>
+      <button type="submit">Save Event</button>
     </form>
   );
 };

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/apiService';
+import { Link } from 'react-router-dom';
 
 interface Event {
   id: number;
@@ -17,32 +18,37 @@ const EventList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    api.get('/events')
-      .then(response => {
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get('/events');
         setEvents(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the events!', error);
-      });
+      } catch (error) {
+        console.error('Error fetching events', error);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
-  const handleDelete = (id: number) => {
-    api.delete(`/events/${id}`)
-      .then(response => {
-        setEvents(events.filter(event => event.id !== id));
-      })
-      .catch(error => {
-        console.error('There was an error deleting the event!', error);
-      });
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/events/${id}`);
+      setEvents(events.filter(event => event.id !== id));
+    } catch (error) {
+      console.error('Error deleting event', error);
+    }
   };
 
   return (
     <div>
-      <h1>Events</h1>
+      <Link to="/events/new">Create New Event</Link>
       <ul>
         {events.map(event => (
           <li key={event.id}>
-            {event.name}
+            <h2>{event.name}</h2>
+            <p>{event.description}</p>
+            <Link to={`/events/${event.id}`}>View</Link>
+            <Link to={`/events/${event.id}/edit`}>Edit</Link>
             <button onClick={() => handleDelete(event.id)}>Delete</button>
           </li>
         ))}

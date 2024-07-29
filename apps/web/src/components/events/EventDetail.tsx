@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/apiService';
 
 interface EventDetailProps {
@@ -9,13 +9,16 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId }) => {
   const [event, setEvent] = useState<any>(null);
 
   useEffect(() => {
-    api.get(`/events/${eventId}`)
-      .then(response => {
+    const fetchEvent = async () => {
+      try {
+        const response = await api.get(`/events/${eventId}`);
         setEvent(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the event!', error);
-      });
+      } catch (error) {
+        console.error('Error fetching event', error);
+      }
+    };
+
+    fetchEvent();
   }, [eventId]);
 
   if (!event) {
@@ -24,7 +27,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId }) => {
 
   return (
     <div>
-      <h1>{event.name}</h1>
+      <h2>{event.name}</h2>
       <p>{event.description}</p>
       <p>{event.location}</p>
       <p>{event.date}</p>
