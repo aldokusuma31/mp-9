@@ -3,6 +3,7 @@
     "target": "ES2015",
     "module": "commonjs",
     "strict": true,
+    "lib": ["esnext"],//new
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

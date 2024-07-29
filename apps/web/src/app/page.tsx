@@ -1,6 +1,10 @@
 'use client'
 
 import React from "react";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import EventList from "@/components/events/EventList";
+import EventForm from "@/components/events/EventForm";
+import EventDetail from "@/components/events/EventDetail";
 import Hero from "@/components/Hero";
 import AboutMe from "@/components/AboutMe";
 import Services from "@/components/Services";
@@ -42,6 +46,14 @@ export default function Home() {
       <div className="flex flex-row">
         {renderFruitList()}
       </div>
+      {/* <BrowserRouter>
+        <Routes>
+          <Route path="/" exact component={EventList} />
+          <Route path="/events/new" component={EventForm} />
+          <Route path="/events/:id/edit" render={({ match }) => <EventForm eventId={parseInt(match.params.id)} />} />
+          <Route path="/events/:id" render={({ match }) => <EventDetail eventId={parseInt(match.params.id)} />} />
+        </Routes>
+      </BrowserRouter> */}
       <AboutMe />
       <Services />
       <Skills />
