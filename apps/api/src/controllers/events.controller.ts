@@ -104,7 +104,7 @@ export class EventsController {
       } = req.body;
 
       const updatedEvent = await eventAction.updateEventById(
-        eventId,
+        parsedEventId,
         name,
         description,
         location,

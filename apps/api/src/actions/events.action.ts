@@ -1,3 +1,4 @@
+import { events_ticket_type } from '@prisma/client';
 import prisma from '../prisma';
 
 class EventAction {
@@ -8,13 +9,13 @@ class EventAction {
     location: string,
     date: Date,
     time: Date,
-    ticketType: string,
+    ticket_type: events_ticket_type,
     price: number,
     availableSeats: number,
     promotion: number | null
   ) {
     try {
-      const event = await prisma.event.create({
+      const event = await prisma.events.create({
         data: {
           organizerId,
           name,
@@ -22,7 +23,7 @@ class EventAction {
           location,
           date,
           time,
-          ticketType,
+          ticket_type,
           price,
           availableSeats,
           promotion,
@@ -36,7 +37,7 @@ class EventAction {
 
   public async getAllEvents() {
     try {
-      const events = await prisma.event.findMany();
+      const events = await prisma.events.findMany();
       return events;
     } catch (error) {
       throw error;
@@ -45,7 +46,7 @@ class EventAction {
 
   public async getEventById(id: number) {
     try {
-      const event = await prisma.event.findUnique({
+      const event = await prisma.events.findUnique({
         where: {
           id,
         },
@@ -64,13 +65,13 @@ class EventAction {
     location: string,
     date: Date,
     time: Date,
-    ticketType: string,
+    ticket_type: events_ticket_type,
     price: number,
     availableSeats: number,
     promotion: number | null
   ) {
     try {
-      const event = await prisma.event.update({
+      const event = await prisma.events.update({
         where: {
           id,
         },
@@ -80,7 +81,7 @@ class EventAction {
           location,
           date,
           time,
-          ticketType,
+          ticket_type,
           price,
           availableSeats,
           promotion,
@@ -94,7 +95,7 @@ class EventAction {
   
   public async deleteEventById(id: number) {
     try {
-      const event = await prisma.event.delete({
+      const event = await prisma.events.delete({
         where: {
           id,
         },

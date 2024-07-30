@@ -2,7 +2,7 @@
 
 import React from "react";
 // import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// import EventList from "@/components/events/EventList";
+import EventList from "@/components/events/EventList";
 // import EventForm from "@/components/events/EventForm";
 // import EventDetail from "@/components/events/EventDetail";
 import Hero from "@/components/Hero";
@@ -15,45 +15,38 @@ import Reviews from "@/components/Reviews";
 import Blog from "@/components/Blog";
 import Contact from "@/components/Contact";
 
-const fruits = [
-  "apple",
-  "Apple",
-  "orange",
-  "banana",
-  "pear",
-  "grapefruit",
-  "peach",
-  "apricot",
-  "nectarine",
-  "plum",
-  "mango",
-  "strawberry",
-  "blueberry",
-  "kiwi",
-  "passionfruit",
-  "raspberry",
-  "watermelon"
-];
+// const fruits = [
+//   "apple",
+//   "Apple",
+//   "orange",
+//   "banana",
+//   "pear",
+//   "grapefruit",
+//   "peach",
+//   "apricot",
+//   "nectarine",
+//   "plum",
+//   "mango",
+//   "strawberry",
+//   "blueberry",
+//   "kiwi",
+//   "passionfruit",
+//   "raspberry",
+//   "watermelon"
+// ];
 
 export default function Home() {
-  const renderFruitList = () => {
-    return fruits.map((fruit, i) => <div className="m-3"><button className="bg-white" key={i}>{fruit}</button></div>);
-  };
+  // const renderFruitList = () => {
+  //   return fruits.map((fruit, i) => <div className="m-3"><button className="bg-white" key={i}>{fruit}</button></div>);
+  // };
 
   return (
     <div className="overflow-hidden">
       <Hero />
-      <div className="flex flex-row">
+      {/* <div className="flex flex-row">
         {renderFruitList()}
-      </div>
-      {/* <BrowserRouter>
-        <Routes>
-          <Route path="/" exact component={EventList} />
-          <Route path="/events/new" component={EventForm} />
-          <Route path="/events/:id/edit" render={({ match }) => <EventForm eventId={parseInt(match.params.id)} />} />
-          <Route path="/events/:id" render={({ match }) => <EventDetail eventId={parseInt(match.params.id)} />} />
-        </Routes>
-      </BrowserRouter> */}
+      </div> */}
+      <EventList />
       <AboutMe />
       <Services />
       <Skills />
