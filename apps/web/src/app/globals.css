@@ -9,6 +9,17 @@
       @apply relative text-xl w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-yellow-400 text-white after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-right
   }
 
+  .popover-open {
+    width: 200px;
+    height: 100px;
+    position: absolute;
+    inset: unset;
+    bottom: 5px;
+    right: 5px;
+    margin: 0;
+  }
+  
+
   .custom-bg {
       background-image: linear-gradient(to right, rgba(0, 0, 0, 0.836), rgba(0, 0, 0, 0.811)), url("/images/bg.jpg");
       background-repeat: no-repeat;

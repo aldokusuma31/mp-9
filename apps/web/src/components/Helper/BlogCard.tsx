@@ -1,15 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
 import { ChatBubbleLeftRightIcon, CalendarIcon } from '@heroicons/react/20/solid';
+import Link from 'next/link';
 
 interface Props {
+    id: number;
     title: string;
     comment: string;
     date: string;
     image: string;
 }
 
-const BlogCard = ({ title, comment, date, image }: Props) => {
+const BlogCard = ({ id, title, comment, date, image }: Props) => {
     return (
         <div>
             <div>
@@ -29,11 +31,11 @@ const BlogCard = ({ title, comment, date, image }: Props) => {
                     {title}
                 </h1>
                 <div className='flex items-center mt-[2rem] justify-between'>
-                    <div className='flex items-center space-x-3'>
+                    {/* <div className='flex items-center space-x-3'>
                         <ChatBubbleLeftRightIcon className='w-[1.2rem] h-[1.2rem] text-yellow-400' />
                         <p className='text-[15px] text-white opacity-85'>{comment} Comments</p>
-                    </div>
-                    <button className='text-[15px] hover:text-yellow-500 transition-all duration-150 text-white font-semibold underline'>More Details</button>
+                    </div> */}
+                    <Link href={`/events/${id}`} className='text-[15px] hover:text-yellow-500 transition-all duration-150 text-white font-semibold underline'>More Details</Link>
                 </div>
             </div>
         </div>

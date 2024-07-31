@@ -105,6 +105,29 @@ class EventAction {
       throw error;
     }
   }
+
+  getEvents = async (textInput: string) => {
+    const whereClause: any = {
+      OR: [
+        {
+          name: { contains: textInput },
+        },
+        {
+          description: { contains: textInput },
+        },
+      ],
+    };
+
+    const events = await prisma.events.findMany({
+      where: whereClause,
+    });
+
+    const total_count = await prisma.events.count({
+      where: whereClause,
+    });
+
+    return { events, total_count };
+  };
 }
 
 export default new EventAction();

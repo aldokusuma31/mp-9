@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import debounce from 'debounce';
+import SearchBar from './SearchBar';
 import { useRouter } from 'next/navigation';
 import { Bars3Icon } from '@heroicons/react/20/solid';
 
@@ -12,34 +12,9 @@ export const Nav = ({ openNav }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
-  // let listToDisplay = fruits;
-
-  const handleChange = (e: any) => {
-    setSearchTerm(e.target.value);
-  };
-
-  // const renderFruitList = () => {
-  //   return listToDisplay.map((fruit, i) => <p key={i}>{fruit}</p>);
-  // };
-
-  // if (searchTerm !== "") {
-  //   listToDisplay = fruits.filter((fruit) => {
-  //     return fruit.includes(searchTerm);
-  //   });
-  // }
-
-  const debouncedResults = useMemo(() => {
-    return debounce(handleChange, 300);
-  }, []);
-
+  const [navSticky, setNavSticky] = useState(false)
   useEffect(() => {
-    return () => {
-      debouncedResults.clear();
-    };
-  });
-  const [navSticky, setNavSticky] =useState(false)
-  useEffect(() => {
-    
+
     const handler = () => {
       if (window.scrollY >= 90) {
         setNavSticky(true);
@@ -50,7 +25,7 @@ export const Nav = ({ openNav }: Props) => {
     };
     window.addEventListener("scroll", handler);
   }, []);
-  const stickyStyle = navSticky?`bg-[#212428] shadow-gray-900 shadow-sm`:``
+  const stickyStyle = navSticky ? `bg-[#212428] shadow-gray-900 shadow-sm` : ``
 
   return (
     <div className={`fixed w-[100%] ${stickyStyle} transition-all duration-300 z-[1000] `}>
@@ -60,12 +35,8 @@ export const Nav = ({ openNav }: Props) => {
           Zenith
         </div>
         <ul className="md:flex hidden items-center space-x-10">
-        <input type="text" onChange={debouncedResults} className="w-[250px] h-[30px] mr-sm p-sm rounded-md" />
-        <button className='nav__link' onClick={()=>router.push(`/search/${searchTerm}`)}>Search</button>
-        {/* {renderFruitList()} */}
+          <SearchBar />
           <li><a className="nav__link" href="#">Home</a></li>
-          <li><a className="nav__link" href="#">About</a></li>
-          <li><a className="nav__link" href="#">Services</a></li>
           <li><a className="nav__link" href="#">Login</a></li>
           <li><a className="nav__link" href="#">Sign Up</a></li>
         </ul>

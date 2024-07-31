@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useCallback } from 'react';
 import debounce from 'debounce';
 import api from './services/apiService';
@@ -16,11 +18,12 @@ interface Event {
 
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Event[]>([]);
+  const [results, setResults] = useState<any>(null);
 
   const fetchSearchResults = (searchQuery: string) => {
-    api.get(`/events/search?q=${searchQuery}`)
+    api.get(`/events/events/search?q=${searchQuery}`)
       .then(response => {
+        console.log(response.data);
         setResults(response.data);
       })
       .catch(error => {
@@ -34,23 +37,24 @@ const SearchBar: React.FC = () => {
     const { value } = event.target;
     setQuery(value);
     debouncedFetchSearchResults(value);
+    // console.log(value);
   };
 
   return (
-    <div>
+    <div className='relative'>
       <input
         type="text"
         value={query}
         onChange={handleInputChange}
         placeholder="Search events..."
       />
-      <ul>
-        {results.map(event => (
-          <li key={event.id}>
+      {results&&<ul className='absolute top-16'>
+        {results?.data.map((event: Event) => (
+          <li className='nav__link' key={event.id}>
             {event.name} - {event.description}
           </li>
         ))}
-      </ul>
+      </ul>}
     </div>
   );
 };

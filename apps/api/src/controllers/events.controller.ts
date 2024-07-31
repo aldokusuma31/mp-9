@@ -141,6 +141,26 @@ export class EventsController {
       next(error);
     }
   };
+
+  getEvents = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const {
+        q = '',
+      } = req.query;
+
+      const { events, total_count } = await eventAction.getEvents(
+        String(q),
+      );
+
+      res.status(200).json({
+        message: 'Get events success',
+        data: events,
+        // total_count: total_count,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new EventsController();
