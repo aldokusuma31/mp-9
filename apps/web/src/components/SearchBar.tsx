@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import debounce from 'debounce';
 import api from './services/apiService';
 
@@ -19,16 +19,27 @@ interface Event {
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any>(null);
+  const [showPopover, setShowPopover] = useState(false);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
-  const fetchSearchResults = (searchQuery: string) => {
-    api.get(`/events/events/search?q=${searchQuery}`)
-      .then(response => {
-        console.log(response.data);
-        setResults(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the search results!', error);
-      });
+  const fetchSearchResults = async (searchQuery: string) => {
+    try {
+      const response = await api.get(`/events/events/search?q=${searchQuery}`);
+      console.log(response.data);
+      setResults(response.data);
+      setShowPopover(true);
+
+      // Set a timer to hide the popover after a short delay
+      if (timer) {
+        clearTimeout(timer);
+      }
+      const newTimer = setTimeout(() => {
+        setShowPopover(false);
+      }, 2000);
+      setTimer(newTimer);
+    } catch (error) {
+      console.error('There was an error fetching the search results!', error);
+    }
   };
 
   const debouncedFetchSearchResults = useCallback(debounce(fetchSearchResults, 300), []);
@@ -36,25 +47,40 @@ const SearchBar: React.FC = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setQuery(value);
-    debouncedFetchSearchResults(value);
-    // console.log(value);
+    if (value) {
+      debouncedFetchSearchResults(value);
+    } else {
+      setShowPopover(false);
+    }
   };
 
+  useEffect(() => {
+    return () => {
+      // Cleanup the timer on component unmount
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [timer]);
+
   return (
-    <div className='relative'>
+    <div className="search-bar-container">
       <input
         type="text"
         value={query}
         onChange={handleInputChange}
         placeholder="Search events..."
+        className="search-bar-input"
       />
-      {results&&<ul className='absolute top-16'>
-        {results?.data.map((event: Event) => (
-          <li className='nav__link' key={event.id}>
-            {event.name} - {event.description}
-          </li>
-        ))}
-      </ul>}
+      {showPopover && (
+        <div className="search-popover">
+          {results?.data.map((event: Event) => (
+            <div key={event.id} className="search-result">
+              <strong>{event.name}</strong> - {event.description}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

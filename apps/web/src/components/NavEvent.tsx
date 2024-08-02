@@ -9,7 +9,6 @@ interface Props {
 
 
 export const Nav = ({ openNav }: Props) => {
-  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
   const [navSticky, setNavSticky] = useState(false)
